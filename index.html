@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Protótipo conceitual — S.Elo</title>
+<style>
+  :root{
+    --primary:#00875A;
+    --secondary:#0B6E4F;
+    --accent:#F2B134;
+    --dark:#0A1F1A;
+    --text-dark:#13221D;
+    --muted:#5C7A70;
+    --card-bg:#EAF5EF;
+    --card-bg2:#DFF0E6;
+    --line:#CFE4D8;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    font-family:"Calibri","Segoe UI",Arial,sans-serif;
+    background: radial-gradient(circle at 20% 15%, #0F2E24 0%, var(--dark) 55%);
+    color:var(--text-dark);
+    display:flex; flex-direction:column; align-items:center;
+    padding:74px 20px 40px;
+  }
+  .disclaimer{
+    position:fixed; top:20px; left:50%; transform:translateX(-50%);
+    background:rgba(255,255,255,0.12); color:#EAF5EF;
+    border:1px solid rgba(255,255,255,0.35);
+    padding:8px 22px; border-radius:20px;
+    font-size:14px; letter-spacing:.3px;
+    z-index:50; white-space:nowrap;
+  }
+
+  /* ---------- DEVICE FRAME (padrão de janela de desktop) ---------- */
+  .device{
+    width:min(1240px, 94vw);
+    aspect-ratio: 16 / 10;
+    background:#FFFFFF;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 45px 90px rgba(0,0,0,0.5);
+    display:flex; flex-direction:column;
+  }
+  .device-chrome{
+    height:46px; flex-shrink:0; background:#E7ECEA;
+    display:flex; align-items:center; gap:18px; padding:0 16px;
+    border-bottom:1px solid #D6DEDA;
+  }
+  .device-chrome .dots{ display:flex; gap:7px; }
+  .device-chrome .dots span{ width:11px; height:11px; border-radius:50%; display:block; }
+  .device-chrome .dots span:nth-child(1){ background:#EC6A5E; }
+  .device-chrome .dots span:nth-child(2){ background:#F4BF4F; }
+  .device-chrome .dots span:nth-child(3){ background:#61C554; }
+  .device-chrome .url{
+    flex:1; background:#FFFFFF; border:1px solid #D6DEDA; border-radius:7px;
+    padding:6px 14px; font-size:12.5px; color:#7C8F87; text-align:center;
+  }
+  .device-body{ position:relative; flex:1; overflow:hidden; }
+
+  /* ---------- LOGIN SCREEN ---------- */
+  #login{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(180deg, #F7FBF9 0%, #EAF5EF 100%);
+  }
+  .login-card{
+    width:min(430px, 84%); background:#FFFFFF; border-radius:16px;
+    box-shadow:0 20px 45px rgba(10,31,26,0.18);
+    padding:clamp(28px,3.5vw,40px) clamp(26px,3.5vw,38px) clamp(24px,3vw,32px);
+    text-align:center;
+  }
+  .mark{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin-bottom:6px;
+  }
+  .mark .dot{
+    width:30px;height:30px;border-radius:9px;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    display:flex;align-items:center;justify-content:center;
+    color:white;font-weight:bold;font-family:Cambria,serif;font-size:16px;
+  }
+  .mark .word{font-family:Cambria,serif; font-size:22px; font-weight:bold; color:var(--dark);}
+  .subtitle{color:var(--muted); font-size:13px; margin-bottom:24px;}
+  .field{ text-align:left; margin-bottom:14px; }
+  .field label{ font-size:11.5px; color:var(--muted); display:block; margin-bottom:4px; letter-spacing:.3px; }
+  .field .box{
+    width:100%; padding:11px 13px; border-radius:8px;
+    border:1.5px solid var(--line); background:#F7FBF9;
+    font-size:13.5px; color:#7C8F87;
+  }
+  .btn-wrap{ position:relative; margin-top:14px; }
+  .btn-primary{
+    width:100%; padding:12.5px; border-radius:8px; border:none;
+    background:var(--primary); color:white; font-size:14.5px; font-weight:bold;
+    letter-spacing:.3px; box-shadow:0 8px 18px rgba(0,135,90,0.35);
+    position:relative; z-index:2; cursor:pointer;
+  }
+  .click-hint{
+    position:absolute; top:-38px; right:-6px; z-index:3;
+    background:var(--accent); color:#3A2A00; font-size:11px; font-weight:bold;
+    padding:6px 12px; border-radius:20px; white-space:nowrap;
+    box-shadow:0 6px 14px rgba(242,177,52,0.45);
+    animation:bob 1.4s ease-in-out infinite;
+  }
+  .click-hint::after{
+    content:""; position:absolute; bottom:-5px; right:22px;
+    width:10px; height:10px; background:var(--accent); transform:rotate(45deg);
+  }
+  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-4px);} }
+  .fine{ margin-top:16px; font-size:11px; color:var(--muted); line-height:1.5; }
+  .badge-restrict{
+    display:inline-block; margin-top:12px; background:var(--card-bg); color:var(--secondary);
+    border:1px solid var(--line); border-radius:20px; padding:4px 13px; font-size:10.5px; font-weight:bold;
+  }
+
+  /* ---------- DASHBOARD SCREEN ---------- */
+  #dashboard{
+    position:absolute; inset:0; display:none;
+    background:#F3F8F5; overflow:hidden;
+  }
+  .topbar{
+    height:64px; background:var(--dark); display:flex; align-items:center;
+    justify-content:space-between; padding:0 32px; flex-shrink:0;
+  }
+  .topbar .mark .word{color:#FFFFFF;}
+  .topbar .user{ color:#DDEAE3; font-size:12.5px; text-align:right; }
+  .topbar .user b{ color:#FFFFFF; }
+  .content{ padding:26px 34px; }
+  .content h1{ font-family:Cambria,serif; font-size:20px; color:var(--dark); margin:0 0 4px; }
+  .content p.lead{ color:var(--muted); font-size:12.5px; margin:0 0 18px; }
+  .cards{ display:flex; gap:16px; }
+  .rec-card{
+    flex:1; background:white; border-radius:12px; padding:18px 18px 16px;
+    box-shadow:0 10px 26px rgba(10,31,26,0.08); border-top:5px solid var(--muted);
+    display:flex; flex-direction:column; gap:9px;
+  }
+  .rec-card.new{ border-top-color:var(--accent); }
+  .rec-card.wait{ border-top-color:var(--secondary); }
+  .rec-card.connected{ border-top-color:var(--primary); }
+  .status{
+    align-self:flex-start; font-size:10px; font-weight:bold; padding:4px 10px;
+    border-radius:20px; letter-spacing:.3px;
+  }
+  .status.new{ background:#FDF1D9; color:#9C6B0A; }
+  .status.wait{ background:#E2F0EA; color:var(--secondary); }
+  .status.connected{ background:#DFF0E6; color:var(--primary); }
+  .rec-card h3{ margin:0; font-size:14px; color:var(--dark); font-family:Cambria,serif; line-height:1.25;}
+  .rec-card .field-row{ font-size:10.5px; color:var(--muted); }
+  .rec-card .field-row b{ color:var(--text-dark); }
+  .rec-card .why{ font-size:11.5px; color:var(--text-dark); line-height:1.4; flex-grow:1; }
+  .rec-card .product{
+    font-size:10.5px; background:var(--card-bg); color:var(--secondary);
+    padding:5px 9px; border-radius:6px; display:inline-block; width:fit-content;
+  }
+  .rec-card button{
+    margin-top:4px; padding:9px; border-radius:7px; border:none; font-size:11.5px; font-weight:bold;
+  }
+  .rec-card.new button{ background:var(--primary); color:white; }
+  .rec-card.wait button{ background:#EDEFEE; color:var(--muted); }
+  .rec-card.connected button{ background:var(--dark); color:white; }
+
+  .caption{
+    margin-top:16px; color:#AFCABE; font-size:13px; text-align:center; max-width:700px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="disclaimer">Protótipo conceitual · dados fictícios · não é uma tela real da Stone</div>
+
+  <div class="device">
+    <div class="device-chrome">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="url">protótipo.interno / s.elo-hub</div>
+    </div>
+    <div class="device-body">
+      <div id="login">
+        <div class="login-card">
+          <div class="mark"><div class="dot">S</div><div class="word">.Elo</div></div>
+          <div class="subtitle">Ambiente interno · Motor de Incentivo Stone</div>
+          <div class="field">
+            <label>CNPJ</label>
+            <div class="box">00.000.000/0001-00</div>
+          </div>
+          <div class="field">
+            <label>Senha</label>
+            <div class="box">••••••••••</div>
+          </div>
+          <div class="btn-wrap">
+            <div class="click-hint">clique pra ver o protótipo →</div>
+            <button class="btn-primary" onclick="document.getElementById('login').style.display='none';document.getElementById('dashboard').style.display='flex';">Entrar</button>
+          </div>
+          <div class="fine">Acesso exclusivo para empresas que já participam do pool de incentivo Stone.<br>Sem cadastro aberto ao público.</div>
+          <div class="badge-restrict">ambiente fechado · apenas convidados</div>
+        </div>
+      </div>
+
+      <div id="dashboard" style="flex-direction:column;">
+        <div class="topbar">
+          <div class="mark"><div class="dot">S</div><div class="word">.Elo</div></div>
+          <div class="user">Logado como<br><b>Envolve Plásticos Ltda.</b></div>
+        </div>
+        <div class="content">
+          <h1>Conexões sugeridas para você</h1>
+          <p class="lead">Mapeadas a partir do seu perfil de produto e movimentação — sem exposição de identidade até aceite mútuo.</p>
+          <div class="cards">
+            <div class="rec-card new">
+              <div class="status new">Sugestão nova</div>
+              <h3>Fabricante de embalagens plásticas</h3>
+              <div class="field-row">Porte: <b>médio</b> · Região: <b>Sudeste</b></div>
+              <div class="why">Compra recorrente de insumo plástico compatível com o volume que você produz — sinal de fit de fornecimento.</div>
+              <div class="product">Ponte via Conta PJ · Pix Empresarial</div>
+              <button>Aceitar sugestão</button>
+            </div>
+            <div class="rec-card wait">
+              <div class="status wait">Aguardando aceite mútuo</div>
+              <h3>Distribuidora do setor alimentício</h3>
+              <div class="field-row">Porte: <b>pequeno</b> · Região: <b>Sudeste</b></div>
+              <div class="why">Busca fornecedor de embalagem com prazo de entrega curto — perfil compatível com sua operação atual.</div>
+              <div class="product">Ponte via Conta PJ · Boleto</div>
+              <button disabled>Aguardando a outra empresa</button>
+            </div>
+            <div class="rec-card connected">
+              <div class="status connected">Conectado</div>
+              <h3>Envolve Embalagens · Sorocaba, SP</h3>
+              <div class="field-row">Porte: <b>médio</b> · Conectado há <b>3 dias</b></div>
+              <div class="why">Identidade revelada após aceite dos dois lados. Primeira negociação já iniciada.</div>
+              <div class="product">Ponte confirmada via Conta PJ</div>
+              <button>Iniciar conversa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="caption">Protótipo interativo — clique em "Entrar" na tela de login para simular o avanço até a tela de recomendações.</div>
+
+</body>
+</html>
